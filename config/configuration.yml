@@ -30,17 +30,23 @@ authentication_backend:
     start_tls: false
     tls:
       server_name: freeipa.home.arpa
-    base_dn: cn=compat,dc=home,dc=arpa
-    additional_users_dn: cn=users
+    base_dn: dc=home,dc=arpa
+    additional_users_dn: cn=users,cn=accounts
     users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
-    additional_groups_dn: cn=groups
-    groups_filter: (&(memberUid={input})(objectClass=posixGroup))
+    additional_groups_dn: cn=groups,cn=accounts
+    groups_filter: (&(member={dn})(objectClass=groupOfNames))
     permit_unauthenticated_bind: false
     user: uid=ldap_ro,cn=users,cn=accounts,dc=home,dc=arpa
     attributes:
       username: uid
       display_name: uid
+      mail: mail
       group_name: cn
+      extra:
+        mail:
+          name: 'ldap_email'
+          multi_valued: false
+          value_type: 'string'
 
 access_control:
   default_policy: deny
@@ -73,6 +79,50 @@ session:
   redis:
     host: authelia-redis-1
     port: 6379
+
+identity_providers:
+  oidc:
+    hmac_secret: {{ secret "/run/secrets/oidc_hmac_secret" | msquote }}
+    jwks:
+      - algorithm: 'RS256'
+        use: 'sig'
+        key: {{ secret "/run/secrets/oidc_jwks_rs256_key" | mindent 10 "|" | msquote }}
+      - algorithm: 'ES256'
+        use: 'sig'
+        key: {{ secret "/run/secrets/oidc_jwks_es256_key" | mindent 10 "|" | msquote }}
+    enforce_pkce: public_clients_only
+    enable_pkce_plain_challenge: false
+    claims_policies:
+      grafana:
+        id_token: ['email', 'name', 'groups', 'preferred_username']
+        custom_claims:
+          email:
+            attribute: 'ldap_email'
+    clients:
+      - client_id: 'grafana'
+        client_name: 'Grafana'
+        client_secret: {{ secret "/run/secrets/oidc_grafana_client_secret_digest" | msquote }}
+        public: false
+        consent_mode: 'pre-configured'
+        pre_configured_consent_duration: 365d
+        authorization_policy: 'one_factor'
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        redirect_uris:
+          - 'https://grafana.docker.home.arpa/login/generic_oauth'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+          - 'email'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        claims_policy: 'grafana'
+        access_token_signed_response_alg: 'none'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_basic'
 
 regulation:
   max_retries: 3
