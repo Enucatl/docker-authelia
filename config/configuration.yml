@@ -17,7 +17,7 @@ server:
         implementation: 'ForwardAuth'
 
 log:
-  level: debug
+  level: info
   keep_stdout: true
 
 totp:
@@ -56,14 +56,22 @@ access_control:
         - '{{ env "LAN_SUBNET" }}'
         - '{{ env "TRUSTED_WIFI_SUBNET" }}'
         - '{{ env "WG_SUBNET" }}'
-        - '172.16.0.0/12'
         - '{{ env "IPV6_LAN_SUBNET" }}'
         - '{{ env "IPV6_TRUSTED_WIFI_SUBNET" }}'
         - '{{ env "IPV6_WG_SUBNET" }}'
   rules:
+    - domain: "wolf.docker.home.arpa"
+      networks:
+        - 'local'
+      subject:
+        - 'group:admins'
+        - 'group:wolf-operators'
+      policy: one_factor
     - domain: "*.docker.home.arpa"
       networks:
         - 'local'
+      subject:
+        - 'group:admins'
       policy: one_factor
 
 session:
@@ -134,13 +142,11 @@ storage:
     address: tcp://authelia-postgres-1:5432
     database: authelia
     username: postgres
-    password: '{{ env "POSTGRES_PASSWORD" }}'
 
 notifier:
   smtp:
     address: submission://smtp.gmail.com:587
     username: '{{ env "SMTP_USERNAME" }}'
-    password: '{{ env "SMTP_PASSWORD" }}'
     sender: '{{ env "SMTP_SENDER" }}'
     identifier: "authelia.docker.home.arpa"
     startup_check_address: '{{ env "SMTP_SENDER" }}'
