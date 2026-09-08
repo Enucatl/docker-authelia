@@ -58,6 +58,7 @@ services:
       - authelia_jwt_secret
       - ldap_password
       - oidc_grafana_client_secret_digest
+      - oidc_beszel_client_secret_digest
       - oidc_hmac_secret
       - oidc_jwks_es256_key
       - oidc_jwks_rs256_key
@@ -111,6 +112,8 @@ secrets:
     file: secrets/ldap_password
   oidc_grafana_client_secret_digest:
     file: secrets/oidc_grafana_client_secret_digest
+  oidc_beszel_client_secret_digest:
+    file: secrets/oidc_beszel_client_secret_digest
   oidc_hmac_secret:
     file: secrets/oidc_hmac_secret
   oidc_jwks_es256_key:
