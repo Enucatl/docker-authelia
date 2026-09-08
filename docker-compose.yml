@@ -44,7 +44,6 @@ services:
       - /etc/ssl/certs/ca-certificates.crt:/certs/ca-certificates.crt:ro
       - ./config/configuration.yml:/config/configuration.yml
     labels:
-      - 'checkmk_monitor=true'
       - 'traefik.enable=true'
       - 'traefik.docker.network=authelia_proxy'
       - 'traefik.http.routers.authelia.rule=Host(`authelia.${DOCKER_DOMAIN}`)'
