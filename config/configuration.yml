@@ -100,6 +100,12 @@ identity_providers:
         key: {{ secret "/run/secrets/oidc_jwks_es256_key" | mindent 10 "|" | msquote }}
     enforce_pkce: public_clients_only
     enable_pkce_plain_challenge: false
+    authorization_policies:
+      admins:
+        default_policy: 'deny'
+        rules:
+          - policy: 'one_factor'
+            subject: 'group:admins'
     claims_policies:
       grafana:
         id_token: ['email', 'name', 'groups', 'preferred_username']
@@ -118,7 +124,7 @@ identity_providers:
         public: false
         consent_mode: 'pre-configured'
         pre_configured_consent_duration: 365d
-        authorization_policy: 'one_factor'
+        authorization_policy: 'admins'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
@@ -141,7 +147,7 @@ identity_providers:
         client_secret: {{ secret "/run/secrets/oidc_beszel_client_secret_digest" | msquote }}
         public: false
         consent_mode: 'implicit'
-        authorization_policy: 'one_factor'
+        authorization_policy: 'admins'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
