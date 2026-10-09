@@ -69,6 +69,12 @@ access_control:
       subject:
         - 'group:admins'
       policy: one_factor
+    - domain: "browser-use.docker.home.arpa"
+      networks:
+        - 'browser_use'
+      subject:
+        - 'group:admins'
+      policy: one_factor
     - domain: "wolf.docker.home.arpa"
       networks:
         - 'local'
