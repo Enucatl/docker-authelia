@@ -59,7 +59,16 @@ access_control:
         - '{{ env "IPV6_LAN_SUBNET" }}'
         - '{{ env "IPV6_TRUSTED_WIFI_SUBNET" }}'
         - '{{ env "IPV6_WG_SUBNET" }}'
+    - name: browser_use
+      networks:
+        - '172.17.96.1/32'
   rules:
+    - domain: "grindr-api-dev-tool.docker.home.arpa"
+      networks:
+        - 'browser_use'
+      subject:
+        - 'group:admins'
+      policy: one_factor
     - domain: "wolf.docker.home.arpa"
       networks:
         - 'local'
