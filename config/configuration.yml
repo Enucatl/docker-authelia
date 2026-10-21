@@ -21,7 +21,7 @@ log:
   keep_stdout: true
 
 totp:
-  issuer: authelia.docker.home.arpa
+  issuer: authelia.atlas.home.arpa
 
 authentication_backend:
   ldap:
@@ -29,7 +29,7 @@ authentication_backend:
     timeout: 10s
     start_tls: false
     tls:
-      server_name: freeipa.home.arpa
+      server_name: ipa.home.arpa
     base_dn: dc=home,dc=arpa
     additional_users_dn: cn=users,cn=accounts
     users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
@@ -51,50 +51,53 @@ authentication_backend:
 access_control:
   default_policy: deny
   networks:
-    - name: local
-      networks:
-        - '{{ env "LAN_SUBNET" }}'
-        - '{{ env "TRUSTED_WIFI_SUBNET" }}'
-        - '{{ env "WG_SUBNET" }}'
-        - '{{ env "IPV6_LAN_SUBNET" }}'
-        - '{{ env "IPV6_TRUSTED_WIFI_SUBNET" }}'
-        - '{{ env "IPV6_WG_SUBNET" }}'
-    - name: browser_use
-      networks:
-        - '172.17.96.1/32'
+  - name: local
+    networks:
+    - '{{ env "LAN_SUBNET" }}'
+    - '{{ env "TRUSTED_WIFI_SUBNET" }}'
+    - '{{ env "WG_SUBNET" }}'
+    - '{{ env "IPV6_LAN_SUBNET" }}'
+    - '{{ env "IPV6_TRUSTED_WIFI_SUBNET" }}'
+    - '{{ env "IPV6_WG_SUBNET" }}'
+    - fd6b:d722:1738:0::/64
+    - fd6b:d722:1738:a::/64
+    - fd6b:d722:1738:28::/64
+    - fd6b:d722:1738:c8::/64
+  - name: browser_use
+    networks:
+    - 172.17.96.1/32
   rules:
-    - domain: "grindr-api-dev-tool.docker.home.arpa"
-      networks:
-        - 'browser_use'
-      subject:
-        - 'group:admins'
-      policy: one_factor
-    - domain: "browser-use.docker.home.arpa"
-      networks:
-        - 'browser_use'
-      subject:
-        - 'group:admins'
-      policy: one_factor
-    - domain: "wolf.docker.home.arpa"
-      networks:
-        - 'local'
-      subject:
-        - 'group:admins'
-        - 'group:wolf-operators'
-      policy: one_factor
-    - domain: "*.docker.home.arpa"
-      networks:
-        - 'local'
-      subject:
-        - 'group:admins'
-      policy: one_factor
-
+  - domain: grindr-api-dev-tool.atlas.home.arpa
+    networks:
+    - browser_use
+    subject:
+    - group:admins
+    policy: one_factor
+  - domain: browser-use.atlas.home.arpa
+    networks:
+    - browser_use
+    subject:
+    - group:admins
+    policy: one_factor
+  - domain: wolf.atlas.home.arpa
+    networks:
+    - local
+    subject:
+    - group:admins
+    - group:wolf-operators
+    policy: one_factor
+  - domain: '*.atlas.home.arpa'
+    networks:
+    - local
+    subject:
+    - group:admins
+    policy: one_factor
 session:
   cookies:
     - name: authelia_session
-      domain: docker.home.arpa
-      authelia_url: 'https://authelia.docker.home.arpa'
-      default_redirection_url: 'https://traefik.docker.home.arpa/dashboard/#/'
+      domain: atlas.home.arpa
+      authelia_url: 'https://authelia.atlas.home.arpa'
+      default_redirection_url: 'https://traefik.atlas.home.arpa/dashboard/#/'
       same_site: 'lax'
       inactivity: '1d'
       expiration: '2d'
@@ -143,7 +146,7 @@ identity_providers:
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
-          - 'https://grafana.docker.home.arpa/login/generic_oauth'
+          - 'https://grafana.atlas.home.arpa/login/generic_oauth'
         scopes:
           - 'openid'
           - 'profile'
@@ -166,7 +169,7 @@ identity_providers:
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
-          - 'https://beszel.docker.home.arpa/api/oauth2-redirect'
+          - 'https://beszel.atlas.home.arpa/api/oauth2-redirect'
         scopes:
           - 'openid'
           - 'profile'
@@ -197,5 +200,5 @@ notifier:
     address: submission://smtp.gmail.com:587
     username: '{{ env "SMTP_USERNAME" }}'
     sender: '{{ env "SMTP_SENDER" }}'
-    identifier: "authelia.docker.home.arpa"
+    identifier: "authelia.atlas.home.arpa"
     startup_check_address: '{{ env "SMTP_SENDER" }}'

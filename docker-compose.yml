@@ -18,10 +18,10 @@ services:
     expose:
       - 9091
     environment:
-      - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDRESS=ldaps://freeipa.${DOMAIN}
+      - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDRESS=ldaps://ipa.${DOMAIN}
       - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE=/run/secrets/ldap_password
       - AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/run/secrets/authelia_jwt_secret
-      - AUTHELIA_NOTIFIER_SMTP_IDENTIFIER=authelia.docker.home.arpa
+      - AUTHELIA_NOTIFIER_SMTP_IDENTIFIER=authelia.${DOCKER_DOMAIN}
       - AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=/run/secrets/smtp_password
       - AUTHELIA_SESSION_SECRET_FILE=/run/secrets/session_secret
       - AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/run/secrets/storage_encryption_key
