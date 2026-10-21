@@ -43,7 +43,7 @@ services:
       - X_AUTHELIA_HEALTHCHECK_PATH=
     volumes:
       - config:/config
-      - /etc/ssl/certs/ca-certificates.crt:/certs/ca-certificates.crt:ro
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
       - ./config/configuration.yml:/config/configuration.yml
     labels:
       - 'traefik.enable=true'

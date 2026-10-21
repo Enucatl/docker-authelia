@@ -3,8 +3,6 @@
 #                   Authelia configuration                    #
 ###############################################################
 
-certificates_directory: /certs/
-
 server:
   address: 'tcp://:::9091/'
   # needed for read_only: true
