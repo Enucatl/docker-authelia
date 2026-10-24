@@ -13,7 +13,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      authelia_proxy:
+      authelia_traefik:
       default:
     expose:
       - 9091
@@ -47,7 +47,7 @@ services:
       - ./config/configuration.yml:/config/configuration.yml
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=authelia_proxy'
+      - 'traefik.docker.network=authelia_traefik'
       - 'traefik.http.routers.authelia.rule=Host(`authelia.${DOCKER_DOMAIN}`)'
       - 'traefik.http.routers.authelia.entrypoints=https'
       - 'traefik.http.routers.authelia.middlewares=public-rate-limit@file'
@@ -98,8 +98,9 @@ services:
       - 6379
 
 networks:
-  authelia_proxy:
-    external: true
+  authelia_traefik:
+    name: authelia_traefik
+    enable_ipv6: true
   default:
     internal: true
 
