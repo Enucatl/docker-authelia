@@ -4,6 +4,10 @@
 ###############################################################
 
 server:
+  # ForwardAuth carries magnet URLs in headers and authorization redirects.
+  buffers:
+    read: 16384
+    write: 16384
   address: 'tcp://:::9091/'
   # needed for read_only: true
   # still runs the healtcheck, just doesn't write the config file on startup in
