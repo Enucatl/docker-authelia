@@ -156,6 +156,7 @@ identity_providers:
         pkce_challenge_method: 'S256'
         redirect_uris:
           - 'https://jellyfin.atlas.home.arpa/sso/OID/redirect/authelia'
+          - 'https://jellyfin.{{ env "ACME_DOCKER_DOMAIN" }}/sso/OID/redirect/authelia'
         scopes:
           - 'openid'
           - 'profile'

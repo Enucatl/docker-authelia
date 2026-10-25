@@ -18,6 +18,7 @@ services:
     expose:
       - 9091
     environment:
+      - ACME_DOCKER_DOMAIN
       - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDRESS=ldaps://ipa.${DOMAIN}
       - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE=/run/secrets/ldap_password
       - AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/run/secrets/authelia_jwt_secret
