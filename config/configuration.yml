@@ -69,26 +69,34 @@ access_control:
     networks:
     - 172.17.96.1/32
   rules:
-  - domain: grindr-api-dev-tool.atlas.home.arpa
+  - domain:
+    - grindr-api-dev-tool.atlas.home.arpa
+    - 'grindr-api-dev-tool.{{ env "ACME_DOCKER_DOMAIN" }}'
     networks:
     - browser_use
     subject:
     - group:admins
     policy: one_factor
-  - domain: browser-use.atlas.home.arpa
+  - domain:
+    - browser-use.atlas.home.arpa
+    - 'browser-use.{{ env "ACME_DOCKER_DOMAIN" }}'
     networks:
     - browser_use
     subject:
     - group:admins
     policy: one_factor
-  - domain: wolf.atlas.home.arpa
+  - domain:
+    - wolf.atlas.home.arpa
+    - 'wolf.{{ env "ACME_DOCKER_DOMAIN" }}'
     networks:
     - local
     subject:
     - group:admins
     - group:wolf-operators
     policy: one_factor
-  - domain: '*.atlas.home.arpa'
+  - domain:
+    - '*.atlas.home.arpa'
+    - '*.{{ env "ACME_DOCKER_DOMAIN" }}'
     networks:
     - local
     subject:
@@ -100,6 +108,14 @@ session:
       domain: atlas.home.arpa
       authelia_url: 'https://authelia.atlas.home.arpa'
       default_redirection_url: 'https://traefik.atlas.home.arpa/dashboard/#/'
+      same_site: 'lax'
+      inactivity: '1d'
+      expiration: '2d'
+      remember_me: '30d'
+    - name: authelia_session
+      domain: '{{ env "ACME_DOCKER_DOMAIN" }}'
+      authelia_url: 'https://authelia.{{ env "ACME_DOCKER_DOMAIN" }}'
+      default_redirection_url: 'https://traefik.{{ env "ACME_DOCKER_DOMAIN" }}/dashboard/#/'
       same_site: 'lax'
       inactivity: '1d'
       expiration: '2d'

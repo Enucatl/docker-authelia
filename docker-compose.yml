@@ -49,7 +49,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=authelia_traefik'
-      - 'traefik.http.routers.authelia.rule=Host(`authelia.${DOCKER_DOMAIN}`)'
+      - 'traefik.http.routers.authelia.rule=Host(`authelia.${DOCKER_DOMAIN}`) || Host(`authelia.${ACME_DOCKER_DOMAIN}`)'
       - 'traefik.http.routers.authelia.entrypoints=https'
       - 'traefik.http.routers.authelia.middlewares=public-rate-limit@file'
       - 'traefik.http.routers.authelia.tls=true'
